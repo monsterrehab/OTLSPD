@@ -42,10 +42,9 @@
             background-position: 0 0, 2px 2px;
             border-radius: 4px;
             margin-bottom: 140px;
-            overflow: hidden; /* Biztosítja, hogy a pecsét ne lógjon ki a papírról */
+            overflow: hidden;
         }
 
-        /* ÚJ: Halvány pecsét / vízjel a papír jobb alsó sarkában */
         .document-seal {
             position: absolute;
             bottom: 40px;
@@ -53,30 +52,13 @@
             width: 250px;
             height: 250px;
             opacity: 0.15;
-            pointer-events: none; /* Átkattintható, nem zavarja a checkboxokat */
+            pointer-events: none;
             transform: rotate(-15deg);
             z-index: 1;
             background-image: url('https://media.discordapp.net/attachments/904851692992991273/1519822276952985662/Untitled_Project.png?ex=6a3ef44b&is=6a3da2cb&hm=4053e15033054e4341058b6cea8e7d2aec992056b0f19080c7ae80a6f99e2cc7&=&format=webp&quality=lossless&width=960&height=960');
             background-size: contain;
             background-repeat: no-repeat;
         }
-
-        /* HA INKÁBB A PAPÍR MÖGÖTTI SÖTÉT HÁTTÉRRE SZERETNÉD, CSOPORTOSÍTSD ÁT ÍGY A CSS-T:
-        .document-seal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            opacity: 0.05;
-            z-index: -1;
-            pointer-events: none;
-            background-image: url('...');
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-        */
 
         .header {
             display: flex;
@@ -138,6 +120,10 @@
             text-align: center;
             position: relative;
             z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
 
         .search-box {
@@ -150,6 +136,27 @@
             color: var(--ink-color);
             font-size: 1rem;
             text-align: center;
+        }
+
+        /* ÚJ: Stílusos Telepítés gomb, ami illeszkedik a rendőrségi témához */
+        .pwa-install-btn {
+            display: none; /* Alapból rejtve van, JS kapcsolja be */
+            font-family: var(--header-font);
+            background-color: #8b0000;
+            color: white;
+            border: 2px solid var(--ink-color);
+            padding: 8px 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+        }
+
+        .pwa-install-btn:hover {
+            background-color: #b30000;
+            transform: scale(1.03);
         }
 
         .grid-container {
@@ -167,15 +174,11 @@
         }
 
         @media (min-width: 768px) {
-            .row-twin {
-                flex-direction: row;
-            }
-            .row-twin .category-block {
-                flex: 1;
-            }
-            .document {
-                padding: 40px;
-            }
+            .row-twin { flex-direction: row; }
+            .row-twin .category-block { flex: 1; }
+            .document { padding: 40px; }
+            .search-container { flex-direction: row; justify-content: center; }
+            .pwa-install-btn { margin-left: 10px; }
         }
 
         .category-block {
@@ -196,72 +199,26 @@
             text-align: center;
         }
 
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        .crime-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-
-        .crime-table th, .crime-table td {
-            text-align: left;
-            padding: 6px 4px;
-            border-bottom: 1px solid rgba(0,0,0,0.15);
-            vertical-align: middle;
-        }
-
-        .crime-table th {
-            font-family: var(--header-font);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            border-bottom: 2px solid var(--ink-color);
-        }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .crime-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .crime-table th, .crime-table td { text-align: left; padding: 6px 4px; border-bottom: 1px solid rgba(0,0,0,0.15); vertical-align: middle; }
+        .crime-table th { font-family: var(--header-font); text-transform: uppercase; font-size: 0.8rem; border-bottom: 2px solid var(--ink-color); }
 
         .col-check { width: 30px; text-align: center; }
         .col-name { width: auto; }
         .col-punishment { width: 150px; font-weight: bold; text-align: right; }
 
-        .crime-item, .modifier-item {
-            cursor: pointer;
-        }
+        .crime-item, .modifier-item { cursor: pointer; }
+        .crime-item:hover, .modifier-item:hover { background-color: rgba(0,0,0,0.05); }
+        input[type="checkbox"] { transform: scale(1.2); cursor: pointer; }
 
-        .crime-item:hover, .modifier-item:hover {
-            background-color: rgba(0,0,0,0.05);
-        }
-
-        input[type="checkbox"] {
-            transform: scale(1.2);
-            cursor: pointer;
-        }
-
-        .modifier-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 0.85rem;
-        }
-
-        .modifier-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 6px 4px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
-
-        .modifier-item input {
-            margin-top: 3px;
-        }
+        .modifier-list { list-style: none; padding: 0; margin: 0; font-size: 0.85rem; }
+        .modifier-item { display: flex; align-items: flex-start; gap: 10px; padding: 6px 4px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .modifier-item input { margin-top: 3px; }
 
         .summary-block {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             background-color: #11141a;
             color: #fff;
             padding: 12px 15px;
@@ -270,70 +227,24 @@
             border-top: 3px solid #8b0000;
         }
 
-        .summary-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .summary-title {
-            font-family: var(--header-font);
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #ccc;
-        }
-
-        .summary-flex {
-            display: flex;
-            justify-content: space-around;
-            gap: 10px;
-        }
-
-        .summary-item {
-            font-size: 0.85rem;
-            font-family: var(--header-font);
-            text-transform: uppercase;
-        }
-
-        .summary-value {
-            font-family: var(--body-font);
-            font-weight: bold;
-            display: block;
-            font-size: 1.2rem;
-            color: #ff4d4d;
-            margin-top: 2px;
-        }
-
-        .modifier-info {
-            font-size: 0.8rem;
-            color: #aaa;
-            margin-top: 3px;
-            font-family: var(--header-font);
-        }
+        .summary-container { max-width: 1000px; margin: 0 auto; text-align: center; }
+        .summary-title { font-family: var(--header-font); font-size: 1.1rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; color: #ccc; }
+        .summary-flex { display: flex; justify-content: space-around; gap: 10px; }
+        .summary-item { font-size: 0.85rem; font-family: var(--header-font); text-transform: uppercase; }
+        .summary-value { font-family: var(--body-font); font-weight: bold; display: block; font-size: 1.2rem; color: #ff4d4d; margin-top: 2px; }
+        .modifier-info { font-size: 0.8rem; color: #aaa; margin-top: 3px; font-family: var(--header-font); }
 
         .footer {
-            margin-top: 30px;
-            text-align: center;
-            border-top: 1px solid var(--ink-color);
-            padding-top: 15px;
-            font-family: var(--header-font);
-            font-size: 0.8rem;
-            color: rgba(0,0,0,0.6);
-            position: relative;
-            z-index: 2;
+            margin-top: 30px; text-align: center; border-top: 1px solid var(--ink-color); padding-top: 15px;
+            font-family: var(--header-font); font-size: 0.8rem; color: rgba(0,0,0,0.6); position: relative; z-index: 2;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <div class="document">
-    <!-- ÚJ: Ide került be a pecsét HTML eleme -->
     <div class="document-seal"></div>
     
     <div class="header">
@@ -346,12 +257,13 @@
             <h2>BÜNTETÉSI TÖRÖNYKÖNYV</h2>
         </div>
         <div class="header-side">
-            <img src="https://media.discordapp.net/attachments/1501971304125960354/1509650152363786531/zmwhjp6.png?ex=6a3edcc4&is=6a3d8b44&hm=ad47f55bfabc2d15c69a79ef33316f16b8b45adb28c887838f026b8320b999c2&=&format=webp&quality=lossless" alt="USA">
+            <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="USA">
         </div>
     </div>
 
     <div class="search-container">
         <input type="text" id="search" class="search-box" placeholder="KERESÉS... (pl. 'szándékos', 'rablás')">
+        <button id="install-btn" class="pwa-install-btn">Alkalmazás Telepítése</button>
     </div>
 
     <div class="grid-container">
@@ -359,9 +271,7 @@
             <div id="cat-block-I" class="category-block"></div>
             <div id="cat-block-II" class="category-block"></div>
         </div>
-
         <div id="cat-block-III" class="category-block"></div>
-
         <div class="row-twin">
             <div class="category-block">
                 <h3 class="category-title">IV. SÚLYOSBÍTÓ KÖRÜLMÉNYEK (+15% / db)</h3>
@@ -404,6 +314,7 @@
 </div>
 
 <script>
+    // [Itt a korábbi lawBook és renderelő JS kód változatlanul megvan...]
     const lawBook = [
         {
             targetId: "cat-block-I",
@@ -470,27 +381,13 @@
     lawBook.forEach(cat => {
         const targetDiv = document.getElementById(cat.targetId);
         if (!targetDiv) return;
-
         targetDiv.innerHTML = `<h3 class="category-title">${cat.category}</h3>`;
-        
         const responsiveWrapper = document.createElement('div');
         responsiveWrapper.className = 'table-responsive';
-
         const table = document.createElement('table');
         table.className = 'crime-table';
-        
-        table.innerHTML = `
-            <thead>
-                <tr>
-                    <th class="col-check">&nbsp;</th>
-                    <th class="col-name">BŰNCSELEKMÉNY</th>
-                    <th class="col-punishment">BÜNTETÉS / BÍRSÁG</th>
-                </tr>
-            </thead>
-        `;
-        
+        table.innerHTML = `<thead><tr><th class="col-check">&nbsp;</th><th class="col-name">BŰNCSELEKMÉNY</th><th class="col-punishment">BÜNTETÉS / BÍRSÁG</th></tr></thead>`;
         const tbody = document.createElement('tbody');
-
         cat.items.forEach(item => {
             const tr = document.createElement('tr');
             tr.className = 'crime-item';
@@ -500,7 +397,6 @@
                 <td class="col-name">${item.name}</td>
                 <td class="col-punishment">${item.display}</td>
             `;
-            
             tr.addEventListener('click', function(e) {
                 if (e.target.type !== 'checkbox') {
                     const cb = this.querySelector('input[type="checkbox"]');
@@ -508,10 +404,8 @@
                     calculateTotal();
                 }
             });
-
             tbody.appendChild(tr);
         });
-
         table.appendChild(tbody);
         responsiveWrapper.appendChild(table);
         targetDiv.appendChild(responsiveWrapper);
@@ -533,27 +427,21 @@
 
     function calculateTotal() {
         let baseBorton = 0, baseFogda = 0, baseMoney = 0;
-        
         document.querySelectorAll('.crime-cb:checked').forEach(cb => {
             baseBorton += parseInt(cb.dataset.borton || 0);
             baseFogda += parseInt(cb.dataset.fogda || 0);
             baseMoney += parseInt(cb.dataset.money || 0);
         });
-
         const sulyosbitoCount = document.querySelectorAll('.sulyosbito-cb:checked').length;
         const enyhitoCount = document.querySelectorAll('.enyhito-cb:checked').length;
-
         const totalModifierPercent = (sulyosbitoCount * 15) - (enyhitoCount * 25);
         const multiplier = 1 + (totalModifierPercent / 100);
-
         const finalBorton = Math.max(0, Math.round(baseBorton * multiplier));
         const finalFogda = Math.max(0, Math.round(baseFogda * multiplier));
         const finalMoney = Math.max(0, Math.round(baseMoney * multiplier));
-
         document.getElementById('total-borton').innerText = `${finalBorton} perc`;
         document.getElementById('total-fogda').innerText = `${finalFogda} perc`;
         document.getElementById('total-money').innerText = `${finalMoney} $`;
-
         const statusDiv = document.getElementById('modifier-status');
         if (totalModifierPercent === 0) {
             statusDiv.innerText = "Módosítások: Alapérték (0% módosítás)";
@@ -569,16 +457,12 @@
 
     document.getElementById('search').addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase();
-        
         document.querySelectorAll('.crime-table tbody .crime-item').forEach(item => {
-            if (item.dataset.name.includes(query)) {
-                item.classList.remove('hidden');
-            } else {
-                item.classList.add('hidden');
-            }
+            if (item.dataset.name.includes(query)) { item.classList.remove('hidden'); } else { item.classList.add('hidden'); }
         });
     });
 
+    // SW regisztráció
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js')
@@ -586,6 +470,38 @@
                 .catch(err => console.log('Service Worker regisztrációs hiba:', err));
         });
     }
+
+    // ÚJ: TELEPÍTÉSI MECHANIZMUS (PWA)
+    let deferredPrompt;
+    const installBtn = document.getElementById('install-btn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Megakadályozzuk, hogy a böngésző magától feldobja a gyári minit (opcionális, de így mi irányítunk)
+        e.preventDefault();
+        // Elmentjük az eseményt későbbre
+        deferredPrompt = e;
+        // Felfedjük a saját stílusos gombunkat
+        installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        // Előhozzuk a böngésző gyári felugró ablakát
+        deferredPrompt.prompt();
+        // Megvárjuk, mit nyomott a felhasználó
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`Felhasználó választása: ${outcome}`);
+        // Kiürítjük, mert csak egyszer használható fel az esemény
+        deferredPrompt = null;
+        // Elrejtjük a gombot
+        installBtn.style.display = 'none';
+    });
+
+    window.addEventListener('appinstalled', () => {
+        console.log('Az alkalmazás sikeresen telepítve lett!');
+        installBtn.style.display = 'none';
+        deferredPrompt = null;
+    });
 </script>
 </body>
 </html>
