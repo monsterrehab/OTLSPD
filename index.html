@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTPD - Büntetési Törvénykönyv Kalkulátor</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-color: #f1f5f9;
+            --accent-color: #38bdf8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            backdrop-filter: blur(10px);
+        }
+
+        .category-title {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-top: 25px;
+        }
+
+        .crime-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .crime-item {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background 0.2s;
+            backdrop-filter: blur(5px);
+        }
+
+        .crime-item:hover {
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .crime-item input {
+            margin-right: 15px;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .crime-name {
+            flex-grow: 1;
+        }
+
+        .crime-punishment {
+            font-weight: bold;
+            color: #cbd5e1;
+        }
+
+        /* Fix összesítő panel alul */
+        .summary-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            backdrop-filter: blur(15px);
+            min-width: 250px;
+            z-index: 1000;
+        }
+
+        .summary-panel h3 {
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            color: var(--accent-color);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 1.1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>OTPD Büntetési Kalkulátor</h1>
+    
+    <input type="text" id="search" class="search-box" placeholder="Keresés a bűncselekmények között...">
+
+    <div id="laws-container"></div>
+</div>
+
+<div class="summary-panel">
+    <h3>Összesített büntetés</h3>
+    <div class="summary-item"><span>Börtön:</span> <span id="total-borton">0 perc</span></div>
+    <div class="summary-item"><span>Fogda:</span> <span id="total-fogda">0 perc</span></div>
+    <div class="summary-item"><span>Pénzbírság:</span> <span id="total-money">0 $</span></div>
+</div>
+
+<script>
+    // Az imázs alapján strukturált adatok (bővíthető a többi tétellel)
+    const lawBook = [
+        {
+            category: "I. KIEMELT BŰNCSELEKMÉNYEK (BÖRTÖNBÜNTETÉS)",
+            items: [
+                { id: "i1", name: "Szándékos emberölés", borton: 60, fogda: 0, money: 0, display: "60 perc börtön" },
+                { id: "i2", name: "Emberölési kísérlet", borton: 50, fogda: 0, money: 0, display: "50 perc börtön" },
+                { id: "i3", name: "Pénzhamisítás", borton: 50, fogda: 0, money: 0, display: "50 perc börtön" },
+                { id: "i4", name: "Fegyveres rablás", borton: 45, fogda: 0, money: 0, display: "45 perc börtön" },
+                { id: "i5", name: "Emberrablás", borton: 45, fogda: 0, money: 0, display: "45 perc börtön" },
+                { id: "i6", name: "Bankrablás", borton: 40, fogda: 0, money: 0, display: "40 perc börtön" },
+                { id: "i13", name: "Korrupció", borton: 240, fogda: 0, money: 0, display: "240 perc börtön" }
+            ]
+        },
+        {
+            category: "II. BŰNCSELEKMÉNYEK (FOGDA)",
+            items: [
+                { id: "ii1", name: "Garázdaság", borton: 0, fogda: 30, money: 200, display: "30 perc fogda vagy 200 $" },
+                { id: "ii2", name: "Súlyos testi sértés", borton: 0, fogda: 30, money: 0, display: "30 perc fogda" },
+                { id: "ii3", name: "Rendőri intézkedés akadályozása, vagy menekülés", borton: 0, fogda: 25, money: 200, display: "25 perc fogda vagy 200 $" },
+                { id: "ii7", name: "Kábítószer birtoklása", borton: 0, fogda: 20, money: 300, display: "20 perc fogda vagy 300 $" }
+            ]
+        },
+        {
+            category: "III. SZABÁLYSÉRTÉSEK (PÉNZBÍRSÁG)",
+            items: [
+                { id: "iii1", name: "Hamis pénz birtoklása", borton: 0, fogda: 0, money: 200, display: "200 $" },
+                { id: "iii2", name: "Jogosulatlan behajtás állami szerv területére", borton: 0, fogda: 0, money: 150, display: "150 $" },
+                { id: "iii3", name: "Közlekedési baleset okozása", borton: 0, fogda: 0, money: 100, display: "100 $" },
+                { id: "iii10", name: "Gyorshajtás", borton: 0, fogda: 0, money: 50, display: "50 $" }
+            ]
+        }
+    ];
+
+    const container = document.getElementById('laws-container');
+
+    // Felület felépítése az adatokból
+    lawBook.forEach(cat => {
+        const catDiv = document.createElement('div');
+        catDiv.innerHTML = `<div class="category-title">${cat.category}</div>`;
+        
+        const listDiv = document.createElement('div');
+        listDiv.className = 'crime-list';
+
+        cat.items.forEach(item => {
+            const itemLabel = document.createElement('label');
+            itemLabel.className = 'crime-item';
+            itemLabel.dataset.name = item.name.toLowerCase();
+            itemLabel.innerHTML = `
+                <input type="checkbox" value="${item.id}" data-borton="${item.borton}" data-fogda="${item.fogda}" data-money="${item.money}">
+                <span class="crime-name">${item.name}</span>
+                <span class="crime-punishment">${item.display}</span>
+            `;
+            listDiv.appendChild(itemLabel);
+        });
+
+        catDiv.appendChild(listDiv);
+        container.appendChild(catDiv);
+    });
+
+    // Kalkuláció és eseménykezelés
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(cb => cb.addEventListener('change', calculateTotal));
+
+    function calculateTotal() {
+        let borton = 0, fogda = 0, money = 0;
+        
+        document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+            borton += parseInt(cb.dataset.borton);
+            fogda += parseInt(cb.dataset.fogda);
+            money += parseInt(cb.dataset.money);
+        });
+
+        document.getElementById('total-borton').innerText = `${borton} perc`;
+        document.getElementById('total-fogda').innerText = `${fogda} perc`;
+        document.getElementById('total-money').innerText = `${money} $`;
+    }
+
+    // Kereső funkció
+    document.getElementById('search').addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('.crime-item').forEach(item => {
+            if (item.dataset.name.includes(query)) {
+                item.classList.remove('hidden');
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+    });
+</script>
+</body>
+</html>
