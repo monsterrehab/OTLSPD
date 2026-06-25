@@ -26,6 +26,7 @@
             padding: 10px;
             display: flex;
             justify-content: center;
+            position: relative;
         }
 
         .document {
@@ -41,7 +42,41 @@
             background-position: 0 0, 2px 2px;
             border-radius: 4px;
             margin-bottom: 140px;
+            overflow: hidden; /* Biztosítja, hogy a pecsét ne lógjon ki a papírról */
         }
+
+        /* ÚJ: Halvány pecsét / vízjel a papír jobb alsó sarkában */
+        .document-seal {
+            position: absolute;
+            bottom: 40px;
+            right: -20px;
+            width: 250px;
+            height: 250px;
+            opacity: 0.15;
+            pointer-events: none; /* Átkattintható, nem zavarja a checkboxokat */
+            transform: rotate(-15deg);
+            z-index: 1;
+            background-image: url('https://media.discordapp.net/attachments/904851692992991273/1519822276952985662/Untitled_Project.png?ex=6a3ef44b&is=6a3da2cb&hm=4053e15033054e4341058b6cea8e7d2aec992056b0f19080c7ae80a6f99e2cc7&=&format=webp&quality=lossless&width=960&height=960');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        /* HA INKÁBB A PAPÍR MÖGÖTTI SÖTÉT HÁTTÉRRE SZERETNÉD, CSOPORTOSÍTSD ÁT ÍGY A CSS-T:
+        .document-seal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            opacity: 0.05;
+            z-index: -1;
+            pointer-events: none;
+            background-image: url('...');
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        */
 
         .header {
             display: flex;
@@ -51,6 +86,8 @@
             padding-bottom: 15px;
             margin-bottom: 20px;
             gap: 10px;
+            position: relative;
+            z-index: 2;
         }
 
         .header-center {
@@ -99,6 +136,8 @@
             width: 100%;
             margin-bottom: 20px;
             text-align: center;
+            position: relative;
+            z-index: 2;
         }
 
         .search-box {
@@ -117,6 +156,8 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            position: relative;
+            z-index: 2;
         }
 
         .row-twin {
@@ -197,7 +238,6 @@
             cursor: pointer;
         }
 
-        /* Körülmények listája stílus */
         .modifier-list {
             list-style: none;
             padding: 0;
@@ -217,7 +257,6 @@
             margin-top: 3px;
         }
 
-        /* Alsó fix összesítő panel */
         .summary-block {
             position: fixed;
             bottom: 0;
@@ -282,6 +321,8 @@
             font-family: var(--header-font);
             font-size: 0.8rem;
             color: rgba(0,0,0,0.6);
+            position: relative;
+            z-index: 2;
         }
 
         .hidden {
@@ -292,10 +333,12 @@
 <body>
 
 <div class="document">
+    <!-- ÚJ: Ide került be a pecsét HTML eleme -->
+    <div class="document-seal"></div>
     
     <div class="header">
         <div class="header-side">
-            <img src="https://media.discordapp.net/attachments/1501971304125960354/1509650152363786531/zmwhjp6.png?ex=6a3edcc4&is=6a3d8b44&hm=ad47f55bfabc2d15c69a79ef33316f16b8b45adb28c887838f026b8320b999c2&=&format=webp&quality=lossless" alt="OTPD">
+            <img src="https://media.discordapp.net/attachments/1501971304125960354/1509650152363786531/zmwhjp6.png?ex=6a3edcc4&is=6a3d8b44&hm=ad47f55bfabc2d15c69a79ef33316f16b8b45adb28c887838f026b8320b999c2&=&format=webp&quality=lossless&width=960&height=960" alt="OTPD">
             <span class="est">1985</span>
         </div>
         <div class="header-center">
@@ -303,7 +346,7 @@
             <h2>BÜNTETÉSI TÖRÖNYKÖNYV</h2>
         </div>
         <div class="header-side">
-            <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="USA">
+            <img src="https://media.discordapp.net/attachments/1501971304125960354/1509650152363786531/zmwhjp6.png?ex=6a3edcc4&is=6a3d8b44&hm=ad47f55bfabc2d15c69a79ef33316f16b8b45adb28c887838f026b8320b999c2&=&format=webp&quality=lossless" alt="USA">
         </div>
     </div>
 
@@ -327,7 +370,7 @@
                     <li class="modifier-item"><input type="checkbox" class="sulyosbito-cb"><span>Fegyver használata vagy elővétele.</span></li>
                     <li class="modifier-item"><input type="checkbox" class="sulyosbito-cb"><span>Rendvédelmi személy elleni elkövetés.</span></li>
                     <li class="modifier-item"><input type="checkbox" class="sulyosbito-cb"><span>Szervezett bűnözői csoport tagjaként történő elkövetés.</span></li>
-                    <li class="modifier-item"><input type="checkbox" class="sulyosbito-cb"><span>Sorozatos tiszteletlenség a rendvédelemmel szemben az intézkedés során.</span></li>
+                    <li class="modifier-item"><input type="checkbox" class="sulyosbito-cb"><span>Sorozatos tiszteletlemmel szemben az intézkedés során.</span></li>
                 </ul>
             </div>
             <div class="category-block">
@@ -474,7 +517,6 @@
         targetDiv.appendChild(responsiveWrapper);
     });
 
-    // Körülmények kattintáskezelése (sorra kattintva is működjön)
     document.querySelectorAll('.modifier-item').forEach(item => {
         item.addEventListener('click', function(e) {
             if (e.target.type !== 'checkbox') {
@@ -485,7 +527,6 @@
         });
     });
 
-    // Eseményfigyelők az összes checkboxra
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
         cb.addEventListener('change', calculateTotal);
     });
@@ -493,32 +534,26 @@
     function calculateTotal() {
         let baseBorton = 0, baseFogda = 0, baseMoney = 0;
         
-        // Alap büntetések kiszámítása
         document.querySelectorAll('.crime-cb:checked').forEach(cb => {
             baseBorton += parseInt(cb.dataset.borton || 0);
             baseFogda += parseInt(cb.dataset.fogda || 0);
             baseMoney += parseInt(cb.dataset.money || 0);
         });
 
-        // Százalékos módosítók összesítése
         const sulyosbitoCount = document.querySelectorAll('.sulyosbito-cb:checked').length;
         const enyhitoCount = document.querySelectorAll('.enyhito-cb:checked').length;
 
-        // Százalék kiszámítása: +15% súlyosbítónként, -25% enyhítőnként
         const totalModifierPercent = (sulyosbitoCount * 15) - (enyhitoCount * 25);
         const multiplier = 1 + (totalModifierPercent / 100);
 
-        // Végső értékek (nem mehetnek 0 alá)
         const finalBorton = Math.max(0, Math.round(baseBorton * multiplier));
         const finalFogda = Math.max(0, Math.round(baseFogda * multiplier));
         const finalMoney = Math.max(0, Math.round(baseMoney * multiplier));
 
-        // Felület frissítése
         document.getElementById('total-borton').innerText = `${finalBorton} perc`;
         document.getElementById('total-fogda').innerText = `${finalFogda} perc`;
         document.getElementById('total-money').innerText = `${finalMoney} $`;
 
-        // Információs szöveg frissítése a módosítókról
         const statusDiv = document.getElementById('modifier-status');
         if (totalModifierPercent === 0) {
             statusDiv.innerText = "Módosítások: Alapérték (0% módosítás)";
@@ -532,7 +567,6 @@
         }
     }
 
-    // Kereső funkció
     document.getElementById('search').addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase();
         
@@ -545,7 +579,6 @@
         });
     });
 
-    // PWA Service Worker Regisztráció
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js')
