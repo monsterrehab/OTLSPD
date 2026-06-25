@@ -1,0 +1,16 @@
+{
+  "name": "OTPD Büntetési Törvénykönyv",
+  "short_name": "OTPD BTK",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#1e1e1e",
+  "theme_color": "#8b0000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Placeholder_police_badge.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
