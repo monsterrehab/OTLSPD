@@ -8,7 +8,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Special+Elite&display=swap');
 
         :root {
-            --paper-color: #f3ebd3; /* Az eredeti kép sárgás-barna papír tónusa */
+            --paper-color: #f3ebd3;
             --ink-color: #1a1a1a;
             --header-font: 'Oswald', sans-serif;
             --body-font: 'Special Elite', cursive;
@@ -27,7 +27,6 @@
             justify-content: center;
         }
 
-        /* Papír textúra és konténer */
         .document {
             background-color: var(--paper-color);
             width: 100%;
@@ -40,10 +39,9 @@
             background-size: 4px 4px;
             background-position: 0 0, 2px 2px;
             border-radius: 4px;
-            margin-bottom: 120px; /* Hely az alsó fix panelnek mobilon */
+            margin-bottom: 140px;
         }
 
-        /* Fejléc */
         .header {
             display: flex;
             justify-content: space-between;
@@ -73,7 +71,7 @@
             font-size: clamp(1rem, 3vw, 1.8rem);
             margin: 5px 0 0;
             font-weight: 700;
-            color: #8b0000; /* Bordós-pirosas kiemelés mint a képen */
+            color: #8b0000;
             letter-spacing: 2px;
         }
 
@@ -96,7 +94,6 @@
             font-weight: bold;
         }
 
-        /* Kereső */
         .search-container {
             width: 100%;
             margin-bottom: 20px;
@@ -115,14 +112,12 @@
             text-align: center;
         }
 
-        /* Reszponzív Grid rendszer a kategóriáknak */
         .grid-container {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        /* Az I. és II. kategória egymás mellett lesz asztali gépen */
         .row-twin {
             display: flex;
             flex-direction: column;
@@ -159,7 +154,6 @@
             text-align: center;
         }
 
-        /* Táblázat reszponzivitás */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -187,22 +181,42 @@
 
         .col-check { width: 30px; text-align: center; }
         .col-name { width: auto; }
-        .col-punishment { width: 110px; font-weight: bold; text-align: right; }
+        .col-punishment { width: 150px; font-weight: bold; text-align: right; }
 
-        .crime-item {
+        .crime-item, .modifier-item {
             cursor: pointer;
         }
 
-        .crime-item:hover {
+        .crime-item:hover, .modifier-item:hover {
             background-color: rgba(0,0,0,0.05);
         }
 
-        .crime-item input[type="checkbox"] {
+        input[type="checkbox"] {
             transform: scale(1.2);
             cursor: pointer;
         }
 
-        /* Alsó fix összesítő panel - mobilon és asztalin is jól látszik */
+        /* Körülmények listája stílus */
+        .modifier-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.85rem;
+        }
+
+        .modifier-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 4px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .modifier-item input {
+            margin-top: 3px;
+        }
+
+        /* Alsó fix összesítő panel */
         .summary-block {
             position: fixed;
             bottom: 0;
@@ -210,7 +224,7 @@
             right: 0;
             background-color: #11141a;
             color: #fff;
-            padding: 15px;
+            padding: 12px 15px;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
             z-index: 9999;
             border-top: 3px solid #8b0000;
@@ -225,7 +239,7 @@
         .summary-title {
             font-family: var(--header-font);
             font-size: 1.1rem;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: #ccc;
@@ -238,7 +252,7 @@
         }
 
         .summary-item {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-family: var(--header-font);
             text-transform: uppercase;
         }
@@ -249,7 +263,14 @@
             display: block;
             font-size: 1.2rem;
             color: #ff4d4d;
+            margin-top: 2px;
+        }
+
+        .modifier-info {
+            font-size: 0.8rem;
+            color: #aaa;
             margin-top: 3px;
+            font-family: var(--header-font);
         }
 
         .footer {
@@ -273,7 +294,7 @@
     
     <div class="header">
         <div class="header-side">
-            <img src="https://cdn.discordapp.com/attachments/1501971304125960354/1509650152363786531/zmwhjp6.png?ex=6a3edcc4&is=6a3d8b44&hm=ad47f55bfabc2d15c69a79ef33316f16b8b45adb28c887838f026b8320b999c2&" alt="OTPD">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Placeholder_police_badge.svg" alt="OTPD">
             <span class="est">1985</span>
         </div>
         <div class="header-center">
@@ -286,18 +307,39 @@
     </div>
 
     <div class="search-container">
-        <input type="text" id="search" class="search-box" placeholder="KERESÉS... (pl. 'szándékos', 'Garázdaság')">
+        <input type="text" id="search" class="search-box" placeholder="KERESÉS... (pl. 'szándékos', 'rablás')">
     </div>
 
     <div class="grid-container">
-        
         <div class="row-twin">
             <div id="cat-block-I" class="category-block"></div>
             <div id="cat-block-II" class="category-block"></div>
         </div>
 
         <div id="cat-block-III" class="category-block"></div>
-        
+
+        <div class="row-twin">
+            <div class="category-block">
+                <h3 class="category-title">IV. SÚLYOSBÍTÓ KÖRÜLMÉNYEK (+15% / db)</h3>
+                <ul class="modifier-list">
+                    <li class="modifier-item"><input type="checkbox" class="sulyosbito-cb"><span>Visszaeső elkövető.</span></li>
+                    <li class="modifier-item"><input type="checkbox" class="sulyosbito-cb"><span>Fegyver használata vagy elővétele.</span></li>
+                    <li class="modifier-item"><input type="checkbox" class="sulyosbito-cb"><span>Rendvédelmi személy elleni elkövetés.</span></li>
+                    <li class="modifier-item"><input type="checkbox" class="sulyosbito-cb"><span>Szervezett bűnözői csoport tagjaként történő elkövetés.</span></li>
+                    <li class="modifier-item"><input type="checkbox" class="sulyosbito-cb"><span>Sorozatos tiszteletlenség a rendvédelemmel szemben az intézkedés során.</span></li>
+                </ul>
+            </div>
+            <div class="category-block">
+                <h3 class="category-title">V. ENYHÍTŐ KÖRÜLMÉNYEK (-25% / db)</h3>
+                <ul class="modifier-list">
+                    <li class="modifier-item"><input type="checkbox" class="enyhito-cb"><span>Önkéntes együttműködés.</span></li>
+                    <li class="modifier-item"><input type="checkbox" class="enyhito-cb"><span>Beismerő vallomás.</span></li>
+                    <li class="modifier-item"><input type="checkbox" class="enyhito-cb"><span>Első alkalommal elkövetett szabálysértés.</span></li>
+                    <li class="modifier-item"><input type="checkbox" class="enyhito-cb"><span>Az okozott kár önkéntes megtérítése.</span></li>
+                    <li class="modifier-item"><input type="checkbox" class="enyhito-cb"><span>Bizonyító erejű terhelő vallomás ismert bűnelkövetők ellen.</span></li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <div class="footer">
@@ -313,6 +355,7 @@
             <div class="summary-item">Fogda:<span id="total-fogda" class="summary-value">0 perc</span></div>
             <div class="summary-item">Pénzbírság:<span id="total-money" class="summary-value">0 $</span></div>
         </div>
+        <div id="modifier-status" class="modifier-info">Módosítások: Alapérték (0% módosítás)</div>
     </div>
 </div>
 
@@ -320,40 +363,66 @@
     const lawBook = [
         {
             targetId: "cat-block-I",
-            category: "I. KIEMELT BŰNCSELEKMÉNYEK (BÖRTÖN)",
+            category: "I. KIEMELT BŰNCSELEKMÉNYEK (BÖRTÖNBÜNTETÉS)",
             items: [
-                { id: "i1", name: "Szándékos emberölés", borton: 60, fogda: 0, money: 0, display: "60 p" },
-                { id: "i2", name: "Emberölési kísérlet", borton: 50, fogda: 0, money: 0, display: "50 p" },
-                { id: "i3", name: "Pénzhamisítás", borton: 50, fogda: 0, money: 0, display: "50 p" },
-                { id: "i4", name: "Fegyveres rablás", borton: 45, fogda: 0, money: 0, display: "45 p" },
-                { id: "i5", name: "Emberrablás", borton: 45, fogda: 0, money: 0, display: "45 p" },
-                { id: "i6", name: "Bankrablás", borton: 40, fogda: 0, money: 0, display: "40 p" },
-                { id: "i13", name: "Korrupció", borton: 240, fogda: 0, money: 0, display: "240 p" }
+                { id: "i1", name: "1. Szándékos emberölés", borton: 60, fogda: 0, money: 0, display: "60 perc börtön" },
+                { id: "i2", name: "2. Emberölési kísérlet", borton: 50, fogda: 0, money: 0, display: "50 perc börtön" },
+                { id: "i3", name: "3. Pénzhamisítás", borton: 50, fogda: 0, money: 0, display: "50 perc börtön" },
+                { id: "i4", name: "4. Fegyveres rablás", borton: 45, fogda: 0, money: 0, display: "45 perc börtön" },
+                { id: "i5", name: "5. Emberrablás", borton: 45, fogda: 0, money: 0, display: "45 perc börtön" },
+                { id: "i6", name: "6. Bankrablás", borton: 40, fogda: 0, money: 0, display: "40 perc börtön" },
+                { id: "i7", name: "7. Súlyos testi sértés fegyverrel", borton: 35, fogda: 0, money: 0, display: "35 perc börtön" },
+                { id: "i8", name: "8. Fegyveres támadás köztiszteletben álló személy ellen", borton: 35, fogda: 0, money: 0, display: "35 perc börtön" },
+                { id: "i9", name: "9. Támadás köztiszteletben álló személy ellen", borton: 30, fogda: 0, money: 0, display: "30 perc börtön" },
+                { id: "i10", name: "10. Illegális fegyverkereskedelem", borton: 30, fogda: 0, money: 0, display: "30 perc börtön" },
+                { id: "i11", name: "11. Kábítószer-kereskedelem", borton: 30, fogda: 0, money: 0, display: "30 perc börtön" },
+                { id: "i12", name: "12. Jogellenes fegyverviselés", borton: 25, fogda: 0, money: 0, display: "25 perc börtön" },
+                { id: "i13", name: "13. Korrupció", borton: 240, fogda: 0, money: 0, display: "240 perc börtön" }
             ]
         },
         {
             targetId: "cat-block-II",
             category: "II. BŰNCSELEKMÉNYEK (FOGDA)",
             items: [
-                { id: "ii1", name: "Garázdaság", borton: 0, fogda: 30, money: 0, display: "30 p / 200$" },
-                { id: "ii2", name: "Súlyos testi sértés", borton: 0, fogda: 30, money: 0, display: "30 p" },
-                { id: "ii3", name: "Rendőri intézkedés akadályozása", borton: 0, fogda: 25, money: 0, display: "25 p / 200$" },
-                { id: "ii7", name: "Kábítószer birtoklása", borton: 0, fogda: 20, money: 0, display: "20 p / 300$" }
+                { id: "ii1", name: "1. Garázdaság", borton: 0, fogda: 30, money: 0, display: "30 perc fogda vagy 200 $" },
+                { id: "ii2", name: "2. Súlyos testi sértés", borton: 0, fogda: 30, money: 0, display: "30 perc fogda" },
+                { id: "ii3", name: "3. Rendőri intézkedés akadályozása, vagy menekülés", borton: 0, fogda: 25, money: 0, display: "25 perc fogda vagy 200 $" },
+                { id: "ii4", name: "4. Hatóság félrevezetése", borton: 0, fogda: 25, money: 0, display: "25 perc fogda vagy 200 $" },
+                { id: "ii5", name: "5. Hatóság szidalmazása", borton: 0, fogda: 25, money: 0, display: "25 perc fogda vagy 200 $" },
+                { id: "ii6", name: "6. Hatóság fenyegetése", borton: 0, fogda: 25, money: 0, display: "25 perc fogda vagy 300 $" },
+                { id: "ii7", name: "7. Kábítószer birtoklása", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 300 $" },
+                { id: "ii8", name: "8. Verekedés", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 100 $" },
+                { id: "ii9", name: "9. Betörés / rablás", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 300 $" },
+                { id: "ii10", name: "10. Járműlopás", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 200 $" },
+                { id: "ii11", name: "11. Jármű feltörés", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 200 $" },
+                { id: "ii12", name: "12. Szökési kísérlet", borton: 0, fogda: 15, money: 0, display: "15 perc fogda" },
+                { id: "ii13", name: "13. Közveszélyes fenyegetés", borton: 0, fogda: 10, money: 0, display: "10 perc fogda" },
+                { id: "ii14", name: "14. Közrend súlyos megzavarása", borton: 0, fogda: 10, money: 0, display: "10 perc fogda" },
+                { id: "ii15", name: "15. Ittas vezetés", borton: 0, fogda: 10, money: 0, display: "10 perc fogda" }
             ]
         },
         {
             targetId: "cat-block-III",
             category: "III. SZABÁLYSÉRTÉSEK (PÉNZBÍRSÁG)",
             items: [
-                { id: "iii1", name: "Hamis pénz birtoklása", borton: 0, fogda: 0, money: 200, display: "200 $" },
-                { id: "iii2", name: "Jogosulatlan behajtás állami területre", borton: 0, fogda: 0, money: 150, display: "150 $" },
-                { id: "iii3", name: "Közlekedési baleset okozása", borton: 0, fogda: 0, money: 100, display: "100 $" },
-                { id: "iii10", name: "Gyorshajtás", borton: 0, fogda: 0, money: 50, display: "50 $" }
+                { id: "iii1", name: "1. Hamis pénz birtoklása", borton: 0, fogda: 0, money: 200, display: "200 $ / 100 $ hamis pénz" },
+                { id: "iii2", name: "2. Jogosulatlan behajtás állami szerv területére", borton: 0, fogda: 0, money: 150, display: "150 $" },
+                { id: "iii3", name: "3. Közlekedési baleset okozása", borton: 0, fogda: 0, money: 100, display: "100 $" },
+                { id: "iii4", name: "4. Közterületi rendzavarás", borton: 0, fogda: 0, money: 100, display: "100 $" },
+                { id: "iii5", name: "5. Jogosulatlan légtérhasználat", borton: 0, fogda: 0, money: 100, display: "100 $" },
+                { id: "iii6", name: "6. Veszélyes vezetés", borton: 0, fogda: 0, money: 50, display: "50 $" },
+                { id: "iii7", name: "7. Tiltott parkolás", borton: 0, fogda: 0, money: 50, display: "50 $" },
+                { id: "iii8", name: "8. Csendháborítás", borton: 0, fogda: 0, money: 50, display: "50 $" },
+                { id: "iii9", name: "9. Rongálás", borton: 0, fogda: 0, money: 50, display: "50 $" },
+                { id: "iii10", name: "10. Gyorshajtás", borton: 0, fogda: 0, money: 50, display: "50 $" },
+                { id: "iii11", name: "11. Piros jelzés figyelmen kívül hagyása", borton: 0, fogda: 0, money: 50, display: "50 $" },
+                { id: "iii12", name: "12. Személyazonosító okmány hiánya", borton: 0, fogda: 0, money: 50, display: "50 $" },
+                { id: "iii13", name: "13. Járműokmányok hiánya", borton: 0, fogda: 0, money: 50, display: "50 $" },
+                { id: "iii14", name: "14. Jogosulatlan vezetés", borton: 0, fogda: 0, money: 50, display: "50 $" }
             ]
         }
     ];
 
-    // Felület felépítése
     lawBook.forEach(cat => {
         const targetDiv = document.getElementById(cat.targetId);
         if (!targetDiv) return;
@@ -371,7 +440,7 @@
                 <tr>
                     <th class="col-check">&nbsp;</th>
                     <th class="col-name">BŰNCSELEKMÉNY</th>
-                    <th class="col-punishment">BÜNTETÉS</th>
+                    <th class="col-punishment">BÜNTETÉS / BÍRSÁG</th>
                 </tr>
             </thead>
         `;
@@ -383,12 +452,11 @@
             tr.className = 'crime-item';
             tr.dataset.name = item.name.toLowerCase();
             tr.innerHTML = `
-                <td class="col-check"><input type="checkbox" value="${item.id}" data-borton="${item.borton}" data-fogda="${item.fogda}" data-money="${item.money}"></td>
+                <td class="col-check"><input type="checkbox" class="crime-cb" value="${item.id}" data-borton="${item.borton}" data-fogda="${item.fogda}" data-money="${item.money}"></td>
                 <td class="col-name">${item.name}</td>
                 <td class="col-punishment">${item.display}</td>
             `;
             
-            // Ha a sorra kattintanak, a checkbox is jelölődjön be
             tr.addEventListener('click', function(e) {
                 if (e.target.type !== 'checkbox') {
                     const cb = this.querySelector('input[type="checkbox"]');
@@ -405,25 +473,65 @@
         targetDiv.appendChild(responsiveWrapper);
     });
 
-    // Kalkuláció és eseménykezelés
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(cb => cb.addEventListener('change', calculateTotal));
+    // Körülmények kattintáskezelése (sorra kattintva is működjön)
+    document.querySelectorAll('.modifier-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (e.target.type !== 'checkbox') {
+                const cb = this.querySelector('input[type="checkbox"]');
+                cb.checked = !cb.checked;
+                calculateTotal();
+            }
+        });
+    });
+
+    // Eseményfigyelők az összes checkboxra
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', calculateTotal);
+    });
 
     function calculateTotal() {
-        let borton = 0, fogda = 0, money = 0;
+        let baseBorton = 0, baseFogda = 0, baseMoney = 0;
         
-        document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
-            borton += parseInt(cb.dataset.borton || 0);
-            fogda += parseInt(cb.dataset.fogda || 0);
-            money += parseInt(cb.dataset.money || 0);
+        // Alap büntetések kiszámítása
+        document.querySelectorAll('.crime-cb:checked').forEach(cb => {
+            baseBorton += parseInt(cb.dataset.borton || 0);
+            baseFogda += parseInt(cb.dataset.fogda || 0);
+            baseMoney += parseInt(cb.dataset.money || 0);
         });
 
-        document.getElementById('total-borton').innerText = `${borton} perc`;
-        document.getElementById('total-fogda').innerText = `${fogda} perc`;
-        document.getElementById('total-money').innerText = `${money} $`;
+        // Százalékos módosítók összesítése
+        const sulyosbitoCount = document.querySelectorAll('.sulyosbito-cb:checked').length;
+        const enyhitoCount = document.querySelectorAll('.enyhito-cb:checked').length;
+
+        // Százalék kiszámítása: +15% súlyosbítónként, -25% enyhítőnként
+        const totalModifierPercent = (sulyosbitoCount * 15) - (enyhitoCount * 25);
+        const multiplier = 1 + (totalModifierPercent / 100);
+
+        // Végső értékek (nem mehetnek 0 alá)
+        const finalBorton = Math.max(0, Math.round(baseBorton * multiplier));
+        const finalFogda = Math.max(0, Math.round(baseFogda * multiplier));
+        const finalMoney = Math.max(0, Math.round(baseMoney * multiplier));
+
+        // Felület frissítése
+        document.getElementById('total-borton').innerText = `${finalBorton} perc`;
+        document.getElementById('total-fogda').innerText = `${finalFogda} perc`;
+        document.getElementById('total-money').innerText = `${finalMoney} $`;
+
+        // Információs szöveg frissítése a módosítókról
+        const statusDiv = document.getElementById('modifier-status');
+        if (totalModifierPercent === 0) {
+            statusDiv.innerText = "Módosítások: Alapérték (0% módosítás)";
+            statusDiv.style.color = "#aaa";
+        } else if (totalModifierPercent > 0) {
+            statusDiv.innerText = `Módosítások: +${totalModifierPercent}% Súlyosbítás (Súlyosbító: ${sulyosbitoCount}db, Enyhítő: ${enyhitoCount}db)`;
+            statusDiv.style.color = "#ff4d4d";
+        } else {
+            statusDiv.innerText = `Módosítások: ${totalModifierPercent}% Enyhítés (Súlyosbító: ${sulyosbitoCount}db, Enyhítő: ${enyhitoCount}db)`;
+            statusDiv.style.color = "#4dff4d";
+        }
     }
 
-    // JAVÍTOTT ÉS JÓL MŰKÖDŐ KERESŐ
+    // Kereső funkció
     document.getElementById('search').addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase();
         
