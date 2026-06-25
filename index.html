@@ -5,50 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OTPD - Büntetési Törvénykönyv</title>
     <style>
-        /* Alapvető betűtípus és papír háttér */
-        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap'); /* Írógép szerű betű a részletekhez */
-        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap'); /* Vastagabb betű a főcímekhez */
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Special+Elite&display=swap');
 
         :root {
-            --paper-color: #fdf6e3; /* Kicsit sárgásabb papír szín */
-            --ink-color: #2c2c2c; /* Fekete tinta */
+            --paper-color: #f3ebd3; /* Az eredeti kép sárgás-barna papír tónusa */
+            --ink-color: #1a1a1a;
             --header-font: 'Oswald', sans-serif;
             --body-font: 'Special Elite', cursive;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: var(--body-font);
-            background-color: #e0e0e0;
+            background-color: #1e1e1e;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             justify-content: center;
         }
 
-        /* A dokumentumot formázó konténer (papír hatás) */
+        /* Papír textúra és konténer */
         .document {
             background-color: var(--paper-color);
             width: 100%;
-            max-width: 900px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 1px solid #d1d1d1;
+            max-width: 1000px;
+            padding: 25px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #c5b897;
             position: relative;
-            background-image: 
-                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
-                url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36z8gAFWNgAInXrFmDpgAyAFXMAAAr9AAR/E9sEAAAAABJRU5ErkJggg=='); /* Finom papír textúra */
-            background-size: 100% 20px, auto;
-            border-radius: 2px;
+            background-image: radial-gradient(rgba(0,0,0,0.05) 15%, transparent 15%), radial-gradient(rgba(0,0,0,0.05) 15%, transparent 15%);
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
+            border-radius: 4px;
+            margin-bottom: 120px; /* Hely az alsó fix panelnek mobilon */
         }
 
-        /* Fejléc elrendezése */
+        /* Fejléc */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 3px double var(--ink-color);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            gap: 10px;
         }
 
         .header-center {
@@ -58,93 +61,134 @@
 
         .header-center h1 {
             font-family: var(--header-font);
-            font-size: 3rem;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
+            color: #111;
         }
 
         .header-center h2 {
             font-family: var(--header-font);
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 3vw, 1.8rem);
             margin: 5px 0 0;
-            font-weight: 500;
+            font-weight: 700;
+            color: #8b0000; /* Bordós-pirosas kiemelés mint a képen */
+            letter-spacing: 2px;
         }
 
         .header-side {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100px;
+            width: clamp(50px, 10vw, 80px);
         }
 
         .header-side img {
-            max-width: 80px;
-            margin-bottom: 10px;
+            width: 100%;
+            height: auto;
+            opacity: 0.85;
         }
 
         .header-side .est {
             font-family: var(--header-font);
-            font-size: 1.2rem;
+            font-size: clamp(0.8rem, 2vw, 1.2rem);
             font-weight: bold;
         }
 
-        /* Kereső sáv */
+        /* Kereső */
         .search-container {
             width: 100%;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-align: center;
         }
 
         .search-box {
             font-family: var(--body-font);
-            width: 80%;
+            width: 100%;
+            max-width: 500px;
             padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid var(--ink-color);
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 2px solid var(--ink-color);
             color: var(--ink-color);
             font-size: 1rem;
+            text-align: center;
         }
 
-        /* Kategória és Táblázat stílusok */
+        /* Reszponzív Grid rendszer a kategóriáknak */
+        .grid-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Az I. és II. kategória egymás mellett lesz asztali gépen */
+        .row-twin {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .row-twin {
+                flex-direction: row;
+            }
+            .row-twin .category-block {
+                flex: 1;
+            }
+            .document {
+                padding: 40px;
+            }
+        }
+
         .category-block {
-            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.02);
+            padding: 10px;
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
         .category-title {
             font-family: var(--header-font);
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: var(--ink-color);
             border-bottom: 2px solid var(--ink-color);
             padding-bottom: 5px;
             margin-top: 0;
+            margin-bottom: 10px;
             text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* Táblázat reszponzivitás */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
         }
 
         .crime-table {
             width: 100%;
             border-collapse: collapse;
-            font-family: var(--body-font);
+            font-size: 0.85rem;
         }
 
         .crime-table th, .crime-table td {
             text-align: left;
-            padding: 8px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding: 6px 4px;
+            border-bottom: 1px solid rgba(0,0,0,0.15);
+            vertical-align: middle;
         }
 
         .crime-table th {
+            font-family: var(--header-font);
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             border-bottom: 2px solid var(--ink-color);
         }
 
-        .col-check { width: 5%; text-align: center; }
-        .col-name { width: 65%; }
-        .col-punishment { width: 30%; font-weight: bold; }
+        .col-check { width: 30px; text-align: center; }
+        .col-name { width: auto; }
+        .col-punishment { width: 110px; font-weight: bold; text-align: right; }
 
-        /* A bűncselekmény sorok és checkbox-ok */
         .crime-item {
             cursor: pointer;
         }
@@ -154,55 +198,68 @@
         }
 
         .crime-item input[type="checkbox"] {
-            transform: scale(1.3);
+            transform: scale(1.2);
             cursor: pointer;
         }
 
-        /* A beépített összesítő panel */
+        /* Alsó fix összesítő panel - mobilon és asztalin is jól látszik */
         .summary-block {
-            margin-top: 40px;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.4);
-            border: 2px dashed var(--ink-color);
-            border-radius: 8px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #11141a;
+            color: #fff;
+            padding: 15px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            z-index: 9999;
+            border-top: 3px solid #8b0000;
+        }
+
+        .summary-container {
+            max-width: 1000px;
+            margin: 0 auto;
             text-align: center;
         }
 
         .summary-title {
             font-family: var(--header-font);
-            font-size: 1.5rem;
-            margin: 0 0 15px;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: #ccc;
         }
 
         .summary-flex {
             display: flex;
             justify-content: space-around;
-            gap: 20px;
+            gap: 10px;
         }
 
         .summary-item {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
+            font-family: var(--header-font);
+            text-transform: uppercase;
         }
 
         .summary-value {
+            font-family: var(--body-font);
             font-weight: bold;
             display: block;
-            margin-top: 5px;
-            border-bottom: 1px solid var(--ink-color);
-            padding-bottom: 3px;
+            font-size: 1.2rem;
+            color: #ff4d4d;
+            margin-top: 3px;
         }
 
-        /* Lábléc */
         .footer {
-            margin-top: 40px;
+            margin-top: 30px;
             text-align: center;
-            border-top: 2px solid var(--ink-color);
+            border-top: 1px solid var(--ink-color);
             padding-top: 15px;
             font-family: var(--header-font);
-            font-size: 0.9rem;
-            color: rgba(0,0,0,0.7);
+            font-size: 0.8rem;
+            color: rgba(0,0,0,0.6);
         }
 
         .hidden {
@@ -216,7 +273,7 @@
     
     <div class="header">
         <div class="header-side">
-            <img src="https://cdn.discordapp.com/attachments/1501971304125960354/1509650152363786531/zmwhjp6.png?ex=6a3edcc4&is=6a3d8b44&hm=ad47f55bfabc2d15c69a79ef33316f16b8b45adb28c887838f026b8320b999c2&" alt="OTPD Badge">
+            <img src="https://cdn.discordapp.com/attachments/1501971304125960354/1509650152363786531/zmwhjp6.png?ex=6a3edcc4&is=6a3d8b44&hm=ad47f55bfabc2d15c69a79ef33316f16b8b45adb28c887838f026b8320b999c2&" alt="OTPD">
             <span class="est">1985</span>
         </div>
         <div class="header-center">
@@ -224,23 +281,23 @@
             <h2>BÜNTETÉSI TÖRÖNYKÖNYV</h2>
         </div>
         <div class="header-side">
-            <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="USA Flag">
-            <span>&nbsp;</span> </div>
+            <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="USA">
+        </div>
     </div>
 
     <div class="search-container">
         <input type="text" id="search" class="search-box" placeholder="KERESÉS... (pl. 'szándékos', 'Garázdaság')">
     </div>
 
-    <div id="laws-container"></div>
-
-    <div class="summary-block">
-        <div class="summary-title">ÖSSZESÍTETT BÜNTETÉS SZÁMÍTÁSA</div>
-        <div class="summary-flex">
-            <div class="summary-item">BÖRTÖN:<span id="total-borton" class="summary-value">0 perc</span></div>
-            <div class="summary-item">FOGDA:<span id="total-fogda" class="summary-value">0 perc</span></div>
-            <div class="summary-item">PÉNZBÍRSÁG:<span id="total-money" class="summary-value">0 $</span></div>
+    <div class="grid-container">
+        
+        <div class="row-twin">
+            <div id="cat-block-I" class="category-block"></div>
+            <div id="cat-block-II" class="category-block"></div>
         </div>
+
+        <div id="cat-block-III" class="category-block"></div>
+        
     </div>
 
     <div class="footer">
@@ -248,53 +305,67 @@
     </div>
 </div>
 
+<div class="summary-block">
+    <div class="summary-container">
+        <div class="summary-title">Összesített büntetés számítása</div>
+        <div class="summary-flex">
+            <div class="summary-item">Börtön:<span id="total-borton" class="summary-value">0 perc</span></div>
+            <div class="summary-item">Fogda:<span id="total-fogda" class="summary-value">0 perc</span></div>
+            <div class="summary-item">Pénzbírság:<span id="total-money" class="summary-value">0 $</span></div>
+        </div>
+    </div>
+</div>
+
 <script>
-    // Az imázs alapján strukturált adatok (bővíthető a többi tétellel)
     const lawBook = [
         {
-            category: "I. KIEMELT BŰNCSELEKMÉNYEK (BÖRTÖNBÜNTETÉS)",
+            targetId: "cat-block-I",
+            category: "I. KIEMELT BŰNCSELEKMÉNYEK (BÖRTÖN)",
             items: [
-                { id: "i1", name: "Szándékos emberölés", borton: 60, fogda: 0, money: 0, display: "60 perc börtön" },
-                { id: "i2", name: "Emberölési kísérlet", borton: 50, fogda: 0, money: 0, display: "50 perc börtön" },
-                { id: "i3", name: "Pénzhamisítás", borton: 50, fogda: 0, money: 0, display: "50 perc börtön" },
-                { id: "i4", name: "Fegyveres rablás", borton: 45, fogda: 0, money: 0, display: "45 perc börtön" },
-                { id: "i5", name: "Emberrablás", borton: 45, fogda: 0, money: 0, display: "45 perc börtön" },
-                { id: "i6", name: "Bankrablás", borton: 40, fogda: 0, money: 0, display: "40 perc börtön" },
-                { id: "i13", name: "Korrupció", borton: 240, fogda: 0, money: 0, display: "240 perc börtön" }
+                { id: "i1", name: "Szándékos emberölés", borton: 60, fogda: 0, money: 0, display: "60 p" },
+                { id: "i2", name: "Emberölési kísérlet", borton: 50, fogda: 0, money: 0, display: "50 p" },
+                { id: "i3", name: "Pénzhamisítás", borton: 50, fogda: 0, money: 0, display: "50 p" },
+                { id: "i4", name: "Fegyveres rablás", borton: 45, fogda: 0, money: 0, display: "45 p" },
+                { id: "i5", name: "Emberrablás", borton: 45, fogda: 0, money: 0, display: "45 p" },
+                { id: "i6", name: "Bankrablás", borton: 40, fogda: 0, money: 0, display: "40 p" },
+                { id: "i13", name: "Korrupció", borton: 240, fogda: 0, money: 0, display: "240 p" }
             ]
         },
         {
+            targetId: "cat-block-II",
             category: "II. BŰNCSELEKMÉNYEK (FOGDA)",
             items: [
-                { id: "ii1", name: "Garázdaság", borton: 0, fogda: 30, money: 0, display: "30 perc fogda vagy 200 $" }, // Példa: ha a fogdát számoljuk alapból
-                { id: "ii2", name: "Súlyos testi sértés", borton: 0, fogda: 30, money: 0, display: "30 perc fogda" },
-                { id: "ii3", name: "Rendőri intézkedés akadályozása, vagy menekülés", borton: 0, fogda: 25, money: 0, display: "25 perc fogda vagy 200 $" },
-                { id: "ii7", name: "Kábítószer birtoklása", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 300 $" }
+                { id: "ii1", name: "Garázdaság", borton: 0, fogda: 30, money: 0, display: "30 p / 200$" },
+                { id: "ii2", name: "Súlyos testi sértés", borton: 0, fogda: 30, money: 0, display: "30 p" },
+                { id: "ii3", name: "Rendőri intézkedés akadályozása", borton: 0, fogda: 25, money: 0, display: "25 p / 200$" },
+                { id: "ii7", name: "Kábítószer birtoklása", borton: 0, fogda: 20, money: 0, display: "20 p / 300$" }
             ]
         },
         {
+            targetId: "cat-block-III",
             category: "III. SZABÁLYSÉRTÉSEK (PÉNZBÍRSÁG)",
             items: [
                 { id: "iii1", name: "Hamis pénz birtoklása", borton: 0, fogda: 0, money: 200, display: "200 $" },
-                { id: "iii2", name: "Jogosulatlan behajtás állami szerv területére", borton: 0, fogda: 0, money: 150, display: "150 $" },
+                { id: "iii2", name: "Jogosulatlan behajtás állami területre", borton: 0, fogda: 0, money: 150, display: "150 $" },
                 { id: "iii3", name: "Közlekedési baleset okozása", borton: 0, fogda: 0, money: 100, display: "100 $" },
                 { id: "iii10", name: "Gyorshajtás", borton: 0, fogda: 0, money: 50, display: "50 $" }
             ]
         }
     ];
 
-    const container = document.getElementById('laws-container');
-
-    // Felület felépítése az adatokból, táblázatos formában
+    // Felület felépítése
     lawBook.forEach(cat => {
-        const catDiv = document.createElement('div');
-        catDiv.className = 'category-block';
-        catDiv.innerHTML = `<h3 class="category-title">${cat.category}</h3>`;
+        const targetDiv = document.getElementById(cat.targetId);
+        if (!targetDiv) return;
+
+        targetDiv.innerHTML = `<h3 class="category-title">${cat.category}</h3>`;
         
+        const responsiveWrapper = document.createElement('div');
+        responsiveWrapper.className = 'table-responsive';
+
         const table = document.createElement('table');
         table.className = 'crime-table';
         
-        // Táblázat fejléce
         table.innerHTML = `
             <thead>
                 <tr>
@@ -316,12 +387,22 @@
                 <td class="col-name">${item.name}</td>
                 <td class="col-punishment">${item.display}</td>
             `;
+            
+            // Ha a sorra kattintanak, a checkbox is jelölődjön be
+            tr.addEventListener('click', function(e) {
+                if (e.target.type !== 'checkbox') {
+                    const cb = this.querySelector('input[type="checkbox"]');
+                    cb.checked = !cb.checked;
+                    calculateTotal();
+                }
+            });
+
             tbody.appendChild(tr);
         });
 
         table.appendChild(tbody);
-        catDiv.appendChild(table);
-        container.appendChild(catDiv);
+        responsiveWrapper.appendChild(table);
+        targetDiv.appendChild(responsiveWrapper);
     });
 
     // Kalkuláció és eseménykezelés
@@ -332,20 +413,21 @@
         let borton = 0, fogda = 0, money = 0;
         
         document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
-            borton += parseInt(cb.dataset.borton);
-            fogda += parseInt(cb.dataset.fogda);
-            money += parseInt(cb.dataset.money);
+            borton += parseInt(cb.dataset.borton || 0);
+            fogda += parseInt(cb.dataset.fogda || 0);
+            money += parseInt(cb.dataset.money || 0);
         });
 
         document.getElementById('total-borton').innerText = `${borton} perc`;
         document.getElementById('total-fogda').innerText = `${fogda} perc`;
         document.getElementById('total-money').innerText = `${money} $`;
     }
-// JAVÍTOTT KERESŐ FUNKCIÓ
+
+    // JAVÍTOTT ÉS JÓL MŰKÖDŐ KERESŐ
     document.getElementById('search').addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase();
         
-        document.querySelectorAll('.category-block table tbody .crime-item').forEach(item => {
+        document.querySelectorAll('.crime-table tbody .crime-item').forEach(item => {
             if (item.dataset.name.includes(query)) {
                 item.classList.remove('hidden');
             } else {
