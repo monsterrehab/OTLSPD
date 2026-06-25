@@ -3,126 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTPD - Büntetési Törvénykönyv Kalkulátor</title>
+    <title>OTPD - Büntetési Törvénykönyv</title>
     <style>
+        /* Alapvető betűtípus és papír háttér */
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap'); /* Írógép szerű betű a részletekhez */
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap'); /* Vastagabb betű a főcímekhez */
+
         :root {
-            --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --text-color: #f1f5f9;
-            --accent-color: #38bdf8;
-            --border-color: rgba(255, 255, 255, 0.1);
+            --paper-color: #fdf6e3; /* Kicsit sárgásabb papír szín */
+            --ink-color: #2c2c2c; /* Fekete tinta */
+            --header-font: 'Oswald', sans-serif;
+            --body-font: 'Special Elite', cursive;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: var(--body-font);
+            background-color: #e0e0e0;
             margin: 0;
             padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
         }
 
-        .container {
+        /* A dokumentumot formázó konténer (papír hatás) */
+        .document {
+            background-color: var(--paper-color);
             width: 100%;
             max-width: 900px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid #d1d1d1;
+            position: relative;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.02) 1px, transparent 1px),
+                url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAIklEQVQIW2NkQAKrVq36z8gAFWNgAInXrFmDpgAyAFXMAAAr9AAR/E9sEAAAAABJRU5ErkJggg=='); /* Finom papír textúra */
+            background-size: 100% 20px, auto;
+            border-radius: 2px;
         }
 
-        h1 {
-            text-align: center;
-            color: var(--accent-color);
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        /* Fejléc elrendezése */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px double var(--ink-color);
+            padding-bottom: 20px;
             margin-bottom: 30px;
         }
 
-        .search-box {
-            width: 100%;
-            padding: 12px 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 16px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-            backdrop-filter: blur(10px);
-        }
-
-        .category-title {
-            font-size: 1.2rem;
-            color: var(--accent-color);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 5px;
-            margin-top: 25px;
-        }
-
-        .crime-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .crime-item {
-            display: flex;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: background 0.2s;
-            backdrop-filter: blur(5px);
-        }
-
-        .crime-item:hover {
-            background: rgba(56, 189, 248, 0.1);
-        }
-
-        .crime-item input {
-            margin-right: 15px;
-            transform: scale(1.2);
-            cursor: pointer;
-        }
-
-        .crime-name {
+        .header-center {
+            text-align: center;
             flex-grow: 1;
         }
 
-        .crime-punishment {
+        .header-center h1 {
+            font-family: var(--header-font);
+            font-size: 3rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header-center h2 {
+            font-family: var(--header-font);
+            font-size: 1.5rem;
+            margin: 5px 0 0;
+            font-weight: 500;
+        }
+
+        .header-side {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px;
+        }
+
+        .header-side img {
+            max-width: 80px;
+            margin-bottom: 10px;
+        }
+
+        .header-side .est {
+            font-family: var(--header-font);
+            font-size: 1.2rem;
             font-weight: bold;
-            color: #cbd5e1;
         }
 
-        /* Fix összesítő panel alul */
-        .summary-panel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 2px solid var(--accent-color);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            backdrop-filter: blur(15px);
-            min-width: 250px;
-            z-index: 1000;
+        /* Kereső sáv */
+        .search-container {
+            width: 100%;
+            margin-bottom: 30px;
+            text-align: center;
         }
 
-        .summary-panel h3 {
+        .search-box {
+            font-family: var(--body-font);
+            width: 80%;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--ink-color);
+            border-radius: 4px;
+            color: var(--ink-color);
+            font-size: 1rem;
+        }
+
+        /* Kategória és Táblázat stílusok */
+        .category-block {
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            font-family: var(--header-font);
+            font-size: 1.3rem;
+            color: var(--ink-color);
+            border-bottom: 2px solid var(--ink-color);
+            padding-bottom: 5px;
             margin-top: 0;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-            color: var(--accent-color);
+            text-transform: uppercase;
+        }
+
+        .crime-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--body-font);
+        }
+
+        .crime-table th, .crime-table td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .crime-table th {
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--ink-color);
+        }
+
+        .col-check { width: 5%; text-align: center; }
+        .col-name { width: 65%; }
+        .col-punishment { width: 30%; font-weight: bold; }
+
+        /* A bűncselekmény sorok és checkbox-ok */
+        .crime-item {
+            cursor: pointer;
+        }
+
+        .crime-item:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .crime-item input[type="checkbox"] {
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        /* A beépített összesítő panel */
+        .summary-block {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border: 2px dashed var(--ink-color);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .summary-title {
+            font-family: var(--header-font);
+            font-size: 1.5rem;
+            margin: 0 0 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-flex {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
         }
 
         .summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin: 8px 0;
             font-size: 1.1rem;
+        }
+
+        .summary-value {
+            font-weight: bold;
+            display: block;
+            margin-top: 5px;
+            border-bottom: 1px solid var(--ink-color);
+            padding-bottom: 3px;
+        }
+
+        /* Lábléc */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            border-top: 2px solid var(--ink-color);
+            padding-top: 15px;
+            font-family: var(--header-font);
+            font-size: 0.9rem;
+            color: rgba(0,0,0,0.7);
         }
 
         .hidden {
@@ -132,19 +212,40 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>OTPD Büntetési Kalkulátor</h1>
+<div class="document">
     
-    <input type="text" id="search" class="search-box" placeholder="Keresés a bűncselekmények között...">
+    <div class="header">
+        <div class="header-side">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Placeholder_police_badge.svg" alt="OTPD Badge">
+            <span class="est">1985</span>
+        </div>
+        <div class="header-center">
+            <h1>Old Town Police Department</h1>
+            <h2>BÜNTETÉSI TÖRÖNYKÖNYV</h2>
+        </div>
+        <div class="header-side">
+            <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="USA Flag">
+            <span>&nbsp;</span> </div>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="search" class="search-box" placeholder="KERESÉS... (pl. 'szándékos', 'Garázdaság')">
+    </div>
 
     <div id="laws-container"></div>
-</div>
 
-<div class="summary-panel">
-    <h3>Összesített büntetés</h3>
-    <div class="summary-item"><span>Börtön:</span> <span id="total-borton">0 perc</span></div>
-    <div class="summary-item"><span>Fogda:</span> <span id="total-fogda">0 perc</span></div>
-    <div class="summary-item"><span>Pénzbírság:</span> <span id="total-money">0 $</span></div>
+    <div class="summary-block">
+        <div class="summary-title">ÖSSZESÍTETT BÜNTETÉS SZÁMÍTÁSA</div>
+        <div class="summary-flex">
+            <div class="summary-item">BÖRTÖN:<span id="total-borton" class="summary-value">0 perc</span></div>
+            <div class="summary-item">FOGDA:<span id="total-fogda" class="summary-value">0 perc</span></div>
+            <div class="summary-item">PÉNZBÍRSÁG:<span id="total-money" class="summary-value">0 $</span></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        ★ LAW. ORDER. JUSTICE. ★ OTPD-85-BTK, LOS SANTOS, USA
+    </div>
 </div>
 
 <script>
@@ -165,10 +266,10 @@
         {
             category: "II. BŰNCSELEKMÉNYEK (FOGDA)",
             items: [
-                { id: "ii1", name: "Garázdaság", borton: 0, fogda: 30, money: 200, display: "30 perc fogda vagy 200 $" },
+                { id: "ii1", name: "Garázdaság", borton: 0, fogda: 30, money: 0, display: "30 perc fogda vagy 200 $" }, // Példa: ha a fogdát számoljuk alapból
                 { id: "ii2", name: "Súlyos testi sértés", borton: 0, fogda: 30, money: 0, display: "30 perc fogda" },
-                { id: "ii3", name: "Rendőri intézkedés akadályozása, vagy menekülés", borton: 0, fogda: 25, money: 200, display: "25 perc fogda vagy 200 $" },
-                { id: "ii7", name: "Kábítószer birtoklása", borton: 0, fogda: 20, money: 300, display: "20 perc fogda vagy 300 $" }
+                { id: "ii3", name: "Rendőri intézkedés akadályozása, vagy menekülés", borton: 0, fogda: 25, money: 0, display: "25 perc fogda vagy 200 $" },
+                { id: "ii7", name: "Kábítószer birtoklása", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 300 $" }
             ]
         },
         {
@@ -184,27 +285,42 @@
 
     const container = document.getElementById('laws-container');
 
-    // Felület felépítése az adatokból
+    // Felület felépítése az adatokból, táblázatos formában
     lawBook.forEach(cat => {
         const catDiv = document.createElement('div');
-        catDiv.innerHTML = `<div class="category-title">${cat.category}</div>`;
+        catDiv.className = 'category-block';
+        catDiv.innerHTML = `<h3 class="category-title">${cat.category}</h3>`;
         
-        const listDiv = document.createElement('div');
-        listDiv.className = 'crime-list';
+        const table = document.createElement('table');
+        table.className = 'crime-table';
+        
+        // Táblázat fejléce
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th class="col-check">&nbsp;</th>
+                    <th class="col-name">BŰNCSELEKMÉNY</th>
+                    <th class="col-punishment">BÜNTETÉS</th>
+                </tr>
+            </thead>
+        `;
+        
+        const tbody = document.createElement('tbody');
 
         cat.items.forEach(item => {
-            const itemLabel = document.createElement('label');
-            itemLabel.className = 'crime-item';
-            itemLabel.dataset.name = item.name.toLowerCase();
-            itemLabel.innerHTML = `
-                <input type="checkbox" value="${item.id}" data-borton="${item.borton}" data-fogda="${item.fogda}" data-money="${item.money}">
-                <span class="crime-name">${item.name}</span>
-                <span class="crime-punishment">${item.display}</span>
+            const tr = document.createElement('tr');
+            tr.className = 'crime-item';
+            tr.dataset.name = item.name.toLowerCase();
+            tr.innerHTML = `
+                <td class="col-check"><input type="checkbox" value="${item.id}" data-borton="${item.borton}" data-fogda="${item.fogda}" data-money="${item.money}"></td>
+                <td class="col-name">${item.name}</td>
+                <td class="col-punishment">${item.display}</td>
             `;
-            listDiv.appendChild(itemLabel);
+            tbody.appendChild(tr);
         });
 
-        catDiv.appendChild(listDiv);
+        table.appendChild(tbody);
+        catDiv.appendChild(table);
         container.appendChild(catDiv);
     });
 
@@ -229,8 +345,10 @@
     // Kereső funkció
     document.getElementById('search').addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase();
-        document.querySelectorAll('.crime-item').forEach(item => {
-            if (item.dataset.name.includes(query)) {
+        
+        document.querySelectorAll('.crime-block table tbody .crime-item').forEach(item => {
+             // Nem használjuk a .category-block-ot mert az elrejtése eltorzítaná a táblázatot
+             if (item.dataset.name.includes(query)) {
                 item.classList.remove('hidden');
             } else {
                 item.classList.add('hidden');
