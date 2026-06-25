@@ -341,14 +341,12 @@
         document.getElementById('total-fogda').innerText = `${fogda} perc`;
         document.getElementById('total-money').innerText = `${money} $`;
     }
-
-    // Kereső funkció
+// JAVÍTOTT KERESŐ FUNKCIÓ
     document.getElementById('search').addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase();
         
-        document.querySelectorAll('.crime-block table tbody .crime-item').forEach(item => {
-             // Nem használjuk a .category-block-ot mert az elrejtése eltorzítaná a táblázatot
-             if (item.dataset.name.includes(query)) {
+        document.querySelectorAll('.category-block table tbody .crime-item').forEach(item => {
+            if (item.dataset.name.includes(query)) {
                 item.classList.remove('hidden');
             } else {
                 item.classList.add('hidden');
