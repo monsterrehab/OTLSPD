@@ -395,9 +395,127 @@
         table.className = 'crime-table';
         table.innerHTML = `<thead><tr><th class="col-check">&nbsp;</th><th class="col-name">BŰNCSELEKMÉNY</th><th class="col-punishment">BÜNTETÉS / BÍRSÁG</th></tr></thead>`;
         
-        const tbody = document.createElement('tbody');
+          const tbody = document.createElement('tbody');
         cat.items.forEach(item => {
             const tr = document.createElement('tr');
             tr.className = 'crime-item';
             tr.dataset.name = item.name.toLowerCase();
-            tr.innerHTML 
+            tr.innerHTML = `
+                <td class="col-check">
+                    <input type="checkbox" class="crime-cb" value="${item.id}" 
+                           data-borton="${item.borton}" 
+                           data-fogda="${item.fogda}" 
+                           data-money="${item.money}"
+                           data-altmoney="${item.altMoney}">
+                </td>
+                <td class="col-name">${item.name}</td>
+                <td class="col-punishment">${item.display}</td>
+            `;
+            
+            tr.addEventListener('click', function(e) {
+                if (e.target.type !== 'checkbox') {
+                    const cb = this.querySelector('input[type="checkbox"]');
+                    cb.checked = !cb.checked;
+                    calculateTotal();
+                }
+            });
+            tbody.appendChild(tr);
+        });
+        
+        table.appendChild(tbody);
+        responsiveWrapper.appendChild(table);
+        targetDiv.appendChild(responsiveWrapper);
+    });
+
+    document.querySelectorAll('.modifier-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (e.target.type !== 'checkbox') {
+                const cb = this.querySelector('input[type="checkbox"]');
+                cb.checked = !cb.checked;
+                calculateTotal();
+            }
+        });
+    });
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', calculateTotal);
+    });
+
+    function calculateTotal() {
+        let baseBorton = 0, baseFogda = 0, baseMoney = 0, baseAltMoney = 0;
+        
+        document.querySelectorAll('.crime-cb:checked').forEach(cb => {
+            baseBorton += parseInt(cb.dataset.borton || 0);
+            baseFogda += parseInt(cb.dataset.fogda || 0);
+            baseMoney += parseInt(cb.dataset.money || 0);
+            baseAltMoney += parseInt(cb.dataset.altmoney || 0);
+        });
+
+        const sulyosbitoCount = document.querySelectorAll('.sulyosbito-cb:checked').length;
+        const enyhitoCount = document.querySelectorAll('.enyhito-cb:checked').length;
+        const totalModifierPercent = (sulyosbitoCount * 15) - (enyhitoCount * 25);
+        const multiplier = 1 + (totalModifierPercent / 100);
+
+        const finalBorton = Math.max(0, Math.round(baseBorton * multiplier));
+        const finalFogda = Math.max(0, Math.round(baseFogda * multiplier));
+        const finalMoney = Math.max(0, Math.round(baseMoney * multiplier));
+        const finalAltMoney = Math.max(0, Math.round(baseAltMoney * multiplier));
+
+        document.getElementById('total-borton').innerText = `${finalBorton} perc`;
+        document.getElementById('total-fogda').innerText = `${finalFogda} perc`;
+        document.getElementById('total-money').innerText = `${finalMoney} $`;
+        document.getElementById('total-alt-money').innerText = `${finalAltMoney} $`;
+
+        const statusDiv = document.getElementById('modifier-status');
+        if (totalModifierPercent === 0) {
+            statusDiv.innerText = "Módosítások: Alapérték (0% módosítás)";
+            statusDiv.style.color = "#aaa";
+        } else if (totalModifierPercent > 0) {
+            statusDiv.innerText = `Módosítások: +${totalModifierPercent}% Súlyosbítás (Súlyosbító: ${sulyosbitoCount}db, Enyhítő: ${enyhitoCount}db)`;
+            statusDiv.style.color = "#ff4d4d";
+        } else {
+            statusDiv.innerText = `Módosítások: ${totalModifierPercent}% Enyhítés (Súlyosbító: ${sulyosbitoCount}db, Enyhítő: ${enyhitoCount}db)`;
+            statusDiv.style.color = "#4dff4d";
+        }
+    }
+
+    document.getElementById('search').addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('.crime-table tbody .crime-item').forEach(item => {
+            if (item.dataset.name.includes(query)) { item.classList.remove('hidden'); } else { item.classList.add('hidden'); }
+        });
+    });
+
+    // PWA Regisztráció
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('SW regisztrálva!', reg))
+                .catch(err => console.error('SW hiba:', err));
+        });
+    }
+
+    let deferredPrompt;
+    const installBtn = document.getElementById('install-btn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+    });
+
+    window.addEventListener('appinstalled', () => {
+        installBtn.style.display = 'none';
+        deferredPrompt = null;
+    });
+</script>
+</body>
+</html>
