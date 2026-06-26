@@ -41,7 +41,7 @@
             background-size: 4px 4px;
             background-position: 0 0, 2px 2px;
             border-radius: 4px;
-            margin-bottom: 140px;
+            margin-bottom: 160px; /* Megemelve az új summary sor miatt */
             overflow: hidden;
         }
 
@@ -138,9 +138,8 @@
             text-align: center;
         }
 
-        /* ÚJ: Stílusos Telepítés gomb, ami illeszkedik a rendőrségi témához */
         .pwa-install-btn {
-            display: none; /* Alapból rejtve van, JS kapcsolja be */
+            display: none;
             font-family: var(--header-font);
             background-color: #8b0000;
             color: white;
@@ -229,10 +228,14 @@
 
         .summary-container { max-width: 1000px; margin: 0 auto; text-align: center; }
         .summary-title { font-family: var(--header-font); font-size: 1.1rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; color: #ccc; }
-        .summary-flex { display: flex; justify-content: space-around; gap: 10px; }
-        .summary-item { font-size: 0.85rem; font-family: var(--header-font); text-transform: uppercase; }
+        .summary-flex { display: flex; justify-content: space-around; gap: 10px; flex-wrap: wrap; }
+        .summary-item { font-size: 0.85rem; font-family: var(--header-font); text-transform: uppercase; min-width: 120px; }
         .summary-value { font-family: var(--body-font); font-weight: bold; display: block; font-size: 1.2rem; color: #ff4d4d; margin-top: 2px; }
-        .modifier-info { font-size: 0.8rem; color: #aaa; margin-top: 3px; font-family: var(--header-font); }
+        
+        /* Kiemelés a VAGY lehetőségnek */
+        .summary-value.alt-value { color: #ffcc00; }
+        
+        .modifier-info { font-size: 0.8rem; color: #aaa; margin-top: 5px; font-family: var(--header-font); }
 
         .footer {
             margin-top: 30px; text-align: center; border-top: 1px solid var(--ink-color); padding-top: 15px;
@@ -249,12 +252,12 @@
     
     <div class="header">
         <div class="header-side">
-            <img src="https://media.discordapp.net/attachments/1501971304125960354/1509650152363786531/zmwhjp6.png?ex=6a3edcc4&is=6a3d8b44&hm=ad47f55bfabc2d15c69a79ef33316f16b8b45adb28c887838f026b8320b999c2&=&format=webp&quality=lossless&width=960&height=960" alt="OTPD">
+            <img src="https://media.discordapp.net/attachments/1501971304125960354/1509650152363786531/zmwhjp6.png?ex=6a3edcc4&is=6a3dashb44&hm=ad47f55bfabc2d15c69a79ef33316f16b8b45adb28c887838f026b8320b999c2&=&format=webp&quality=lossless&width=960&height=960" alt="OTPD">
             <span class="est">1985</span>
         </div>
         <div class="header-center">
             <h1>Old Town Police Department</h1>
-            <h2>BÜNTETÉSI TÖRVÉNYKÖNYV</h2>
+            <h2>BÜNTETÉSI TÖRÖNYKÖNYV</h2>
         </div>
         <div class="header-side">
             <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="USA">
@@ -297,7 +300,7 @@
     </div>
 
     <div class="footer">
-        ★ LAW. ORDER. JUSTICE. ★ OTPD-85-BTK, OLD TOWN, USA
+        ★ LAW. ORDER. JUSTICE. ★ OTPD-85-BTK, LOS SANTOS, USA
     </div>
 </div>
 
@@ -307,73 +310,74 @@
         <div class="summary-flex">
             <div class="summary-item">Börtön:<span id="total-borton" class="summary-value">0 perc</span></div>
             <div class="summary-item">Fogda:<span id="total-fogda" class="summary-value">0 perc</span></div>
-            <div class="summary-item">Pénzbírság:<span id="total-money" class="summary-value">0 $</span></div>
+            <div class="summary-item">VAGY Fogda helyett:<span id="total-alt-money" class="summary-value alt-value">0 $</span></div>
+            <div class="summary-item">Alap Bírság (kat. III):<span id="total-money" class="summary-value">0 $</span></div>
         </div>
         <div id="modifier-status" class="modifier-info">Módosítások: Alapérték (0% módosítás)</div>
     </div>
 </div>
 
 <script>
-    // [Itt a korábbi lawBook és renderelő JS kód változatlanul megvan...]
+    // ÚJ: Kibővített struktúra altMoney (alternatív pénzbírság) értékekkel a II. kategóriában!
     const lawBook = [
         {
             targetId: "cat-block-I",
             category: "I. KIEMELT BŰNCSELEKMÉNYEK (BÖRTÖNBÜNTETÉS)",
             items: [
-                { id: "i1", name: "1. Szándékos emberölés", borton: 60, fogda: 0, money: 0, display: "60 perc börtön" },
-                { id: "i2", name: "2. Emberölési kísérlet", borton: 50, fogda: 0, money: 0, display: "50 perc börtön" },
-                { id: "i3", name: "3. Pénzhamisítás", borton: 50, fogda: 0, money: 0, display: "50 perc börtön" },
-                { id: "i4", name: "4. Fegyveres rablás", borton: 45, fogda: 0, money: 0, display: "45 perc börtön" },
-                { id: "i5", name: "5. Emberrablás", borton: 45, fogda: 0, money: 0, display: "45 perc börtön" },
-                { id: "i6", name: "6. Bankrablás", borton: 40, fogda: 0, money: 0, display: "40 perc börtön" },
-                { id: "i7", name: "7. Súlyos testi sértés fegyverrel", borton: 35, fogda: 0, money: 0, display: "35 perc börtön" },
-                { id: "i8", name: "8. Fegyveres támadás köztiszteletben álló személy ellen", borton: 35, fogda: 0, money: 0, display: "35 perc börtön" },
-                { id: "i9", name: "9. Támadás köztiszteletben álló személy ellen", borton: 30, fogda: 0, money: 0, display: "30 perc börtön" },
-                { id: "i10", name: "10. Illegális fegyverkereskedelem", borton: 30, fogda: 0, money: 0, display: "30 perc börtön" },
-                { id: "i11", name: "11. Kábítószer-kereskedelem", borton: 30, fogda: 0, money: 0, display: "30 perc börtön" },
-                { id: "i12", name: "12. Jogellenes fegyverviselés", borton: 25, fogda: 0, money: 0, display: "25 perc börtön" },
-                { id: "i13", name: "13. Korrupció", borton: 240, fogda: 0, money: 0, display: "240 perc börtön" }
+                { id: "i1", name: "1. Szándékos emberölés", borton: 60, fogda: 0, money: 0, altMoney: 0, display: "60 perc börtön" },
+                { id: "i2", name: "2. Emberölési kísérlet", borton: 50, fogda: 0, money: 0, altMoney: 0, display: "50 perc börtön" },
+                { id: "i3", name: "3. Pénzhamisítás", borton: 50, fogda: 0, money: 0, altMoney: 0, display: "50 perc börtön" },
+                { id: "i4", name: "4. Fegyveres rablás", borton: 45, fogda: 0, money: 0, altMoney: 0, display: "45 perc börtön" },
+                { id: "i5", name: "5. Emberrablás", borton: 45, fogda: 0, money: 0, altMoney: 0, display: "45 perc börtön" },
+                { id: "i6", name: "6. Bankrablás", borton: 40, fogda: 0, money: 0, altMoney: 0, display: "40 perc börtön" },
+                { id: "i7", name: "7. Súlyos testi sértés fegyverrel", borton: 35, fogda: 0, money: 0, altMoney: 0, display: "35 perc börtön" },
+                { id: "i8", name: "8. Fegyveres támadás köztiszteletben álló személy ellen", borton: 35, fogda: 0, money: 0, altMoney: 0, display: "35 perc börtön" },
+                { id: "i9", name: "9. Támadás köztiszteletben álló személy ellen", borton: 30, fogda: 0, money: 0, altMoney: 0, display: "30 perc börtön" },
+                { id: "i10", name: "10. Illegális fegyverkereskedelem", borton: 30, fogda: 0, money: 0, altMoney: 0, display: "30 perc börtön" },
+                { id: "i11", name: "11. Kábítószer-kereskedelem", borton: 30, fogda: 0, money: 0, altMoney: 0, display: "30 perc börtön" },
+                { id: "i12", name: "12. Jogellenes fegyverviselés", borton: 25, fogda: 0, money: 0, altMoney: 0, display: "25 perc börtön" },
+                { id: "i13", name: "13. Korrupció", borton: 240, fogda: 0, money: 0, altMoney: 0, display: "240 perc börtön" }
             ]
         },
         {
             targetId: "cat-block-II",
             category: "II. BŰNCSELEKMÉNYEK (FOGDA)",
             items: [
-                { id: "ii1", name: "1. Garázdaság", borton: 0, fogda: 30, money: 0, display: "30 perc fogda vagy 200 $" },
-                { id: "ii2", name: "2. Súlyos testi sértés", borton: 0, fogda: 30, money: 0, display: "30 perc fogda" },
-                { id: "ii3", name: "3. Rendőri intézkedés akadályozása, vagy menekülés", borton: 0, fogda: 25, money: 0, display: "25 perc fogda vagy 200 $" },
-                { id: "ii4", name: "4. Hatóság félrevezetése", borton: 0, fogda: 25, money: 0, display: "25 perc fogda vagy 200 $" },
-                { id: "ii5", name: "5. Hatóság szidalmazása", borton: 0, fogda: 25, money: 0, display: "25 perc fogda vagy 200 $" },
-                { id: "ii6", name: "6. Hatóság fenyegetése", borton: 0, fogda: 25, money: 0, display: "25 perc fogda vagy 300 $" },
-                { id: "ii7", name: "7. Kábítószer birtoklása", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 300 $" },
-                { id: "ii8", name: "8. Verekedés", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 100 $" },
-                { id: "ii9", name: "9. Betörés / rablás", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 300 $" },
-                { id: "ii10", name: "10. Járműlopás", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 200 $" },
-                { id: "ii11", name: "11. Jármű feltörés", borton: 0, fogda: 20, money: 0, display: "20 perc fogda vagy 200 $" },
-                { id: "ii12", name: "12. Szökési kísérlet", borton: 0, fogda: 15, money: 0, display: "15 perc fogda" },
-                { id: "ii13", name: "13. Közveszélyes fenyegetés", borton: 0, fogda: 10, money: 0, display: "10 perc fogda" },
-                { id: "ii14", name: "14. Közrend súlyos megzavarása", borton: 0, fogda: 10, money: 0, display: "10 perc fogda" },
-                { id: "ii15", name: "15. Ittas vezetés", borton: 0, fogda: 10, money: 0, display: "10 perc fogda" }
+                { id: "ii1", name: "1. Garázdaság", borton: 0, fogda: 30, money: 0, altMoney: 200, display: "30 perc fogda vagy 200 $" },
+                { id: "ii2", name: "2. Súlyos testi sértés", borton: 0, fogda: 30, money: 0, altMoney: 0, display: "30 perc fogda" },
+                { id: "ii3", name: "3. Rendőri intézkedés akadályozása, vagy menekülés", borton: 0, fogda: 25, money: 0, altMoney: 200, display: "25 perc fogda vagy 200 $" },
+                { id: "ii4", name: "4. Hatóság félrevezetése", borton: 0, fogda: 25, money: 0, altMoney: 200, display: "25 perc fogda vagy 200 $" },
+                { id: "ii5", name: "5. Hatóság szidalmazása", borton: 0, fogda: 25, money: 0, altMoney: 200, display: "25 perc fogda vagy 200 $" },
+                { id: "ii6", name: "6. Hatóság fenyegetése", borton: 0, fogda: 25, money: 0, altMoney: 300, display: "25 perc fogda vagy 300 $" },
+                { id: "ii7", name: "7. Kábítószer birtoklása", borton: 0, fogda: 20, money: 0, altMoney: 300, display: "20 perc fogda vagy 300 $" },
+                { id: "ii8", name: "8. Verekedés", borton: 0, fogda: 20, money: 0, altMoney: 100, display: "20 perc fogda vagy 100 $" },
+                { id: "ii9", name: "9. Betörés / rablás", borton: 0, fogda: 20, money: 0, altMoney: 300, display: "20 perc fogda vagy 300 $" },
+                { id: "ii10", name: "10. Járműlopás", borton: 0, fogda: 20, money: 0, altMoney: 200, display: "20 perc fogda vagy 200 $" },
+                { id: "ii11", name: "11. Jármű feltörés", borton: 0, fogda: 20, money: 0, altMoney: 200, display: "20 perc fogda vagy 200 $" },
+                { id: "ii12", name: "12. Szökési kísérlet", borton: 0, fogda: 15, money: 0, altMoney: 0, display: "15 perc fogda" },
+                { id: "ii13", name: "13. Közveszélyes fenyegetés", borton: 0, fogda: 10, money: 0, altMoney: 0, display: "10 perc fogda" },
+                { id: "ii14", name: "14. Közrend súlyos megzavarása", borton: 0, fogda: 10, money: 0, altMoney: 0, display: "10 perc fogda" },
+                { id: "ii15", name: "15. Ittas vezetés", borton: 0, fogda: 10, money: 0, altMoney: 0, display: "10 perc fogda" }
             ]
         },
         {
             targetId: "cat-block-III",
             category: "III. SZABÁLYSÉRTÉSEK (PÉNZBÍRSÁG)",
             items: [
-                { id: "iii1", name: "1. Hamis pénz birtoklása", borton: 0, fogda: 0, money: 200, display: "200 $ / 100 $ hamis pénz" },
-                { id: "iii2", name: "2. Jogosulatlan behajtás állami szerv területére", borton: 0, fogda: 0, money: 150, display: "150 $" },
-                { id: "iii3", name: "3. Közlekedési baleset okozása", borton: 0, fogda: 0, money: 100, display: "100 $" },
-                { id: "iii4", name: "4. Közterületi rendzavarás", borton: 0, fogda: 0, money: 100, display: "100 $" },
-                { id: "iii5", name: "5. Jogosulatlan légtérhasználat", borton: 0, fogda: 0, money: 100, display: "100 $" },
-                { id: "iii6", name: "6. Veszélyes vezetés", borton: 0, fogda: 0, money: 50, display: "50 $" },
-                { id: "iii7", name: "7. Tiltott parkolás", borton: 0, fogda: 0, money: 50, display: "50 $" },
-                { id: "iii8", name: "8. Csendháborítás", borton: 0, fogda: 0, money: 50, display: "50 $" },
-                { id: "iii9", name: "9. Rongálás", borton: 0, fogda: 0, money: 50, display: "50 $" },
-                { id: "iii10", name: "10. Gyorshajtás", borton: 0, fogda: 0, money: 50, display: "50 $" },
-                { id: "iii11", name: "11. Piros jelzés figyelmen kívül hagyása", borton: 0, fogda: 0, money: 50, display: "50 $" },
-                { id: "iii12", name: "12. Személyazonosító okmány hiánya", borton: 0, fogda: 0, money: 50, display: "50 $" },
-                { id: "iii13", name: "13. Járműokmányok hiánya", borton: 0, fogda: 0, money: 50, display: "50 $" },
-                { id: "iii14", name: "14. Jogosulatlan vezetés", borton: 0, fogda: 0, money: 50, display: "50 $" }
+                { id: "iii1", name: "1. Hamis pénz birtoklása", borton: 0, fogda: 0, money: 200, altMoney: 0, display: "200 $ / 100 $ hamis pénz" },
+                { id: "iii2", name: "2. Jogosulatlan behajtás állami szerv területére", borton: 0, fogda: 0, money: 150, altMoney: 0, display: "150 $" },
+                { id: "iii3", name: "3. Közlekedési baleset okozása", borton: 0, fogda: 0, money: 100, altMoney: 0, display: "100 $" },
+                { id: "iii4", name: "4. Közterületi rendzavarás", borton: 0, fogda: 0, money: 100, altMoney: 0, display: "100 $" },
+                { id: "iii5", name: "5. Jogosulatlan légtérhasználat", borton: 0, fogda: 0, money: 100, altMoney: 0, display: "100 $" },
+                { id: "iii6", name: "6. Veszélyes vezetés", borton: 0, fogda: 0, money: 50, altMoney: 0, display: "50 $" },
+                { id: "iii7", name: "7. Tiltott parkolás", borton: 0, fogda: 0, money: 50, altMoney: 0, display: "50 $" },
+                { id: "iii8", name: "8. Csendháborítás", borton: 0, fogda: 0, money: 50, altMoney: 0, display: "50 $" },
+                { id: "iii9", name: "9. Rongálás", borton: 0, fogda: 0, money: 50, altMoney: 0, display: "50 $" },
+                { id: "iii10", name: "10. Gyorshajtás", borton: 0, fogda: 0, money: 50, altMoney: 0, display: "50 $" },
+                { id: "iii11", name: "11. Piros jelzés figyelmen kívül hagyása", borton: 0, fogda: 0, money: 50, altMoney: 0, display: "50 $" },
+                { id: "iii12", name: "12. Személyazonosító okmány hiánya", borton: 0, fogda: 0, money: 50, altMoney: 0, display: "50 $" },
+                { id: "iii13", name: "13. Járműokmányok hiánya", borton: 0, fogda: 0, money: 50, altMoney: 0, display: "50 $" },
+                { id: "iii14", name: "14. Jogosulatlan vezetés", borton: 0, fogda: 0, money: 50, altMoney: 0, display: "50 $" }
             ]
         }
     ];
@@ -388,120 +392,9 @@
         table.className = 'crime-table';
         table.innerHTML = `<thead><tr><th class="col-check">&nbsp;</th><th class="col-name">BŰNCSELEKMÉNY</th><th class="col-punishment">BÜNTETÉS / BÍRSÁG</th></tr></thead>`;
         const tbody = document.createElement('tbody');
+        
         cat.items.forEach(item => {
             const tr = document.createElement('tr');
             tr.className = 'crime-item';
             tr.dataset.name = item.name.toLowerCase();
-            tr.innerHTML = `
-                <td class="col-check"><input type="checkbox" class="crime-cb" value="${item.id}" data-borton="${item.borton}" data-fogda="${item.fogda}" data-money="${item.money}"></td>
-                <td class="col-name">${item.name}</td>
-                <td class="col-punishment">${item.display}</td>
-            `;
-            tr.addEventListener('click', function(e) {
-                if (e.target.type !== 'checkbox') {
-                    const cb = this.querySelector('input[type="checkbox"]');
-                    cb.checked = !cb.checked;
-                    calculateTotal();
-                }
-            });
-            tbody.appendChild(tr);
-        });
-        table.appendChild(tbody);
-        responsiveWrapper.appendChild(table);
-        targetDiv.appendChild(responsiveWrapper);
-    });
-
-    document.querySelectorAll('.modifier-item').forEach(item => {
-        item.addEventListener('click', function(e) {
-            if (e.target.type !== 'checkbox') {
-                const cb = this.querySelector('input[type="checkbox"]');
-                cb.checked = !cb.checked;
-                calculateTotal();
-            }
-        });
-    });
-
-    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-        cb.addEventListener('change', calculateTotal);
-    });
-
-    function calculateTotal() {
-        let baseBorton = 0, baseFogda = 0, baseMoney = 0;
-        document.querySelectorAll('.crime-cb:checked').forEach(cb => {
-            baseBorton += parseInt(cb.dataset.borton || 0);
-            baseFogda += parseInt(cb.dataset.fogda || 0);
-            baseMoney += parseInt(cb.dataset.money || 0);
-        });
-        const sulyosbitoCount = document.querySelectorAll('.sulyosbito-cb:checked').length;
-        const enyhitoCount = document.querySelectorAll('.enyhito-cb:checked').length;
-        const totalModifierPercent = (sulyosbitoCount * 15) - (enyhitoCount * 25);
-        const multiplier = 1 + (totalModifierPercent / 100);
-        const finalBorton = Math.max(0, Math.round(baseBorton * multiplier));
-        const finalFogda = Math.max(0, Math.round(baseFogda * multiplier));
-        const finalMoney = Math.max(0, Math.round(baseMoney * multiplier));
-        document.getElementById('total-borton').innerText = `${finalBorton} perc`;
-        document.getElementById('total-fogda').innerText = `${finalFogda} perc`;
-        document.getElementById('total-money').innerText = `${finalMoney} $`;
-        const statusDiv = document.getElementById('modifier-status');
-        if (totalModifierPercent === 0) {
-            statusDiv.innerText = "Módosítások: Alapérték (0% módosítás)";
-            statusDiv.style.color = "#aaa";
-        } else if (totalModifierPercent > 0) {
-            statusDiv.innerText = `Módosítások: +${totalModifierPercent}% Súlyosbítás (Súlyosbító: ${sulyosbitoCount}db, Enyhítő: ${enyhitoCount}db)`;
-            statusDiv.style.color = "#ff4d4d";
-        } else {
-            statusDiv.innerText = `Módosítások: ${totalModifierPercent}% Enyhítés (Súlyosbító: ${sulyosbitoCount}db, Enyhítő: ${enyhitoCount}db)`;
-            statusDiv.style.color = "#4dff4d";
-        }
-    }
-
-    document.getElementById('search').addEventListener('input', function(e) {
-        const query = e.target.value.toLowerCase();
-        document.querySelectorAll('.crime-table tbody .crime-item').forEach(item => {
-            if (item.dataset.name.includes(query)) { item.classList.remove('hidden'); } else { item.classList.add('hidden'); }
-        });
-    });
-
-    // SW regisztráció
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker sikeresen regisztrálva!', reg))
-                .catch(err => console.log('Service Worker regisztrációs hiba:', err));
-        });
-    }
-
-    // ÚJ: TELEPÍTÉSI MECHANIZMUS (PWA)
-    let deferredPrompt;
-    const installBtn = document.getElementById('install-btn');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // Megakadályozzuk, hogy a böngésző magától feldobja a gyári minit (opcionális, de így mi irányítunk)
-        e.preventDefault();
-        // Elmentjük az eseményt későbbre
-        deferredPrompt = e;
-        // Felfedjük a saját stílusos gombunkat
-        installBtn.style.display = 'block';
-    });
-
-    installBtn.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        // Előhozzuk a böngésző gyári felugró ablakát
-        deferredPrompt.prompt();
-        // Megvárjuk, mit nyomott a felhasználó
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`Felhasználó választása: ${outcome}`);
-        // Kiürítjük, mert csak egyszer használható fel az esemény
-        deferredPrompt = null;
-        // Elrejtjük a gombot
-        installBtn.style.display = 'none';
-    });
-
-    window.addEventListener('appinstalled', () => {
-        console.log('Az alkalmazás sikeresen telepítve lett!');
-        installBtn.style.display = 'none';
-        deferredPrompt = null;
-    });
-</script>
-</body>
-</html>
+            // Az új dataset attri
